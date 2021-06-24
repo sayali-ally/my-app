@@ -1,62 +1,34 @@
-import React from 'react';
-import Topbar from './components/Topbar'
-import Products from './components/Products'
-import Banner from  './components/Banner';
-import Footer from './components/Footer'
+import React from "react"; // imr
+//React Routing
+// npm i react-router-dom
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+//Components
+import Topbar from "./components/Topbar";
+import Footer from "./components/Footer";
+import Home from "./components/Home";
+import About from "./components/About";
+import Cart from "./components/Cart";
+import Contact from "./components/Contact";
+import PLP from "./components/PLP";
+import PDP from "./components/PDP";
+
 const App = () => {
-    return ( 
-    <>
-       <Topbar/>
-       <Banner/>
-       
-       <Products/>
-       <Footer/>
-    </> 
-    );
-}
- 
+  // sfc
+  return (
+    <BrowserRouter>
+      <Topbar />
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/about" component={About} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/cart" component={Cart} />
+        <Route path="/products" exact component={PLP} />
+        <Route path="/products/:id" component={PDP} />
+        <Route component={() => <h1>404</h1>} />
+      </Switch>
+      <Footer />
+    </BrowserRouter>
+  );
+};
+
 export default App;
-// import PlacesGrid from './components/PlacesGrid'
-// // import Footer from './components/Footer'
-//Correct counter code
-// import React, { useState } from 'react';
-// const App = () => {
-//     const [counter,updateCounter]=useState(0);
-//     return ( 
-//         <>
-//         <h1>{counter}</h1>
-//          <button onClick={()=>updateCounter(counter+1)}>+</button>
-//          <button onClick={()=>updateCounter(counter-1)}>-</button>
-//          </>
-       
-//      );
-// }
- 
-// export default App;
-// import axios from 'axios';
-// import React, { useState,Component, useEffect } from 'react';
-
-// const Products = () => {
-//     const [products,setProducts] = useState([]);
-
-//     useEffect(()=>{
-//         axios('https://5d76bf96515d1a0014085cf9.mockapi.io/product')
-//         .then((res)=>{
-//             setProducts(res.data)
-//         }).catch((err)=>alert(err))
-//     },[]);
-    
-//     return(
-//         <div>
-//           {products.length && products.map((products)=>(
-//               <Product key={products.id}
-//               name={products.name}
-//               preview={products.preview}
-//               price={products.price}
-//             />
-//         </div>
-//     )
-// };
- 
-// export default Products;
-
