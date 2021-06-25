@@ -1,11 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
-const Topbar = () => {
+const Topbar = ({ cart, user }) => {
+  console.log("USer", user.userName);
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-2">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-success p-2">
       <a className="navbar-brand" href="#">
-        TRAINING
+        TRAINING - {user.userName}
       </a>
       <button
         className="navbar-toggler"
@@ -36,15 +38,25 @@ const Topbar = () => {
             </Link>
           </li>
           <li className="nav-item">
-            {/* <Link to="/cart" className="nav-link"> */}
-            <a href="/cart" className="nav-link">
-              Cart
-            </a>
-            {/* </Link> */}
+            <Link to="/cart" className="nav-link">
+              {/* <a href="/cart" className="nav-link"> */}
+              Cart<sup>{cart.length}</sup>
+              {/* </a> */}
+            </Link>
           </li>
           <li className="nav-item">
             <Link to="/products" className="nav-link">
               Products
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/signin" className="nav-link">
+              Sign In
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/signup" className="nav-link">
+              Sign Up
             </Link>
           </li>
         </ul>
@@ -53,4 +65,9 @@ const Topbar = () => {
   );
 };
 
-export default Topbar;
+const mapStateToProps = (store) => ({
+  cart: store.prodReducer.cart,
+  user: store.userReducer,
+});
+
+export default connect(mapStateToProps, null)(Topbar);

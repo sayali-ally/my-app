@@ -1,76 +1,75 @@
-
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "../../App.css";
 import { Link } from "react-router-dom";
+//Redux
+import { connect } from "react-redux";
+import { getProducts, addProduct } from "../../redux/actions";
 
-const Products = () => {
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [showChild, setShowChild] = useState(true);
-  const [count, updateCount] = useState(0);
-  const [name, setName] = useState("Sachin");
-
+const Products = ({ products, sendProducts, updateCart }) => {
   useEffect(() => {
     axios("https://5d76bf96515d1a0014085cf9.mockapi.io/product")
       .then((res) => {
-        setProducts(res.data);
+        sendProducts(res.data);
       })
       .catch((err) => alert(err));
-    console.log("componentDidmount");
   }, []); //componentDidmount
 
   useEffect(() => {
-    console.log("componentDidmount and DidUpdate");
-  }); //componentDidmount and DidUpdate
-
-  useEffect(() => {
-    return () => {
-      //clean Up Code
-    };
-  }, []); // componentWillUnmount
+    console.log("Hello Products Changes");
+  }, [products]);
 
   return (
     <div className={"d-flex flex-wrap justify-content-center"}>
       {products.length &&
-        products.map(({ name, preview, id, description }) => (
-          <div class="card m-2" style={{ width: "18rem" }} key={id}>
-            <Link to={`/products/${id}`}>
-              <img class="card-img-top" src={preview} alt="Card image cap" />
+        products.map((item) => {
+          const { name, preview, id, description } = item;
+          return (
+            <div class="card m-2" style={{ width: "10rem" }} key={id}>
+              <Link
+                to={{
+                  pathname: `/products/${id}`,
+                  preview,
+                  name,
+                  descriptionName: description, // use props.location
+                }}
+              >
+                <img class="card-img-top" src={preview} alt="Card image cap" />
+              </Link>
               <div class="card-body">
-                <h5 class="card-title">{name}</h5>
-                <p class="card-text card-para">{description}</p>
-                <a href="#" class="btn btn-primary">
-                  Go somewhere
+                <Link
+                  to={{
+                    pathname: `/products/${id}`,
+                    preview,
+                    name,
+                    descriptionName: description, // use props.location
+                  }}
+                >
+                  <h5 class="card-title">{name}</h5>
+                  <p class="card-text card-para">{description}</p>
+                </Link>
+                <a
+                  href="#"
+                  class="btn btn-primary mt-3"
+                  onClick={() => updateCart(item)}
+                >
+                  Add to Cart
                 </a>
               </div>
-            </Link>
-          </div>
-        ))}
+            </div>
+          );
+        })}
     </div>
   );
 };
 
-export default Products;
+const mapStateToProps = (store) => ({
+  products: store.prodReducer.products,
+});
 
-const Child = ({ count, name }) => {
-  const [childCount, setChildCount] = useState(count);
-  useEffect(() => {
-    return () => {
-      console.log("Component Child Hidden");
-    };
-  }, []); // componentWillUnmount
+const mapDispatchToProps = (dispatch) => ({
+  sendProducts: (payload) => dispatch(getProducts(payload)),
+  updateCart: (payload) => dispatch(addProduct(payload)),
+});
 
-  useEffect(() => {
-    if (count <= 5) {
-      setChildCount(count);
-    }
-    console.log("Count Changes", name, count);
-  }, [count, name]); // Update count uptill 5
-
-  useEffect(() => {
-    console.log("Child C... didmount and didupdate");
-  });
-
-  return <h1>{count}</h1>;
-};
+export default connect(mapStateToProps, mapDispatchToProps)(Products);
